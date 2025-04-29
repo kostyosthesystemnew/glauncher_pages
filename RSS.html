@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>rss</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #202020;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #55ff55;
+    }
+
+    .news-container {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      margin-top: 30px;
+    }
+
+    .news-item {
+      background-color: #2d2d2d;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+    }
+
+    .news-item:hover {
+      transform: scale(1.02);
+    }
+
+    .news-item img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .news-content {
+      padding: 15px;
+    }
+
+    .news-title {
+      font-size: 18px;
+      margin: 0 0 10px;
+      color: #00ffff;
+    }
+
+    .news-subtitle {
+      font-size: 14px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>Все новости minecraft</h1>
+  <div class="news-container" id="news"></div>
+
+  <script>
+    fetch('https://launchercontent.mojang.com/news.json')
+      .then(response => response.json())
+      .then(data => {
+        const newsContainer = document.getElementById('news');
+        data.newsItems.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'news-item';
+
+          const img = item.image ? `<img src="${item.image}" alt="image">` : '';
+          div.innerHTML = `
+            ${img}
+            <div class="news-content">
+              <h2 class="news-title">${item.title}</h2>
+              <p class="news-subtitle">${item.subtitle || ''}</p>
+            </div>
+          `;
+
+          newsContainer.appendChild(div);
+        });
+      })
+      .catch(err => {
+        document.getElementById('news').innerHTML = '<p>ОЙ ошибка загрузки новостей</p>';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
